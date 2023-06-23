@@ -1,0 +1,49 @@
+{% load static %}
+
+<script>
+    // Get the HTML elements for countdown values
+    const daysElement = document.getElementById('days');
+    const hoursElement = document.getElementById('hours');
+    const minutesElement = document.getElementById('minutes');
+    const secondsElement = document.getElementById('seconds');
+  
+    // Set the target date and time for the countdown
+    const targetDate = new Date('2023-12-31T23:59:59');
+  
+    // Function to update the countdown values
+    function updateCountdown() {
+      const currentDate = new Date();
+      const remainingTime = targetDate - currentDate;
+  
+      // Calculate the days, hours, minutes, and seconds
+      const days = Math.floor(remainingTime / (1000 * 60 * 60 * 60 * 24));
+      const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+  
+      // Update the HTML elements with the countdown values
+      daysElement.textContent = formatTime(days);
+      hoursElement.textContent = formatTime(hours);
+      minutesElement.textContent = formatTime(minutes);
+      secondsElement.textContent = formatTime(seconds);
+    }
+  
+    // Function to format the time values with leading zeros
+    function formatTime(time) {
+      return time < 10 ? `0${time}` : time;
+    }
+  
+    // Update the countdown initially
+    updateCountdown();
+  
+    // Update the countdown every second
+    setInterval(updateCountdown, 1000);
+  </script>
+
+<!-- jQuery Plugins -->
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/slick.min.js' %}"></script>
+<script src="{% static 'js/nouislider.min.js' %}"></script>
+<script src="{% static 'js/jquery.zoom.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
