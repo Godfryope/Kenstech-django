@@ -2,6 +2,7 @@ from django.views.generic import *
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 from .models import *
 
 class ProductListView(ListView):
@@ -31,24 +32,35 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         # context['cart_items'] = self.get_cart_items()
         # context['wishlist_items'] = self.get_wishlist_items()
+        context['cart_items_count'] = self.get_cart_items_count()
+        context['wishlist_items_count'] = self.wishlist_items_count()
         context['hot_deals'] = self.get_hot_deals()
         context['newitems'] = self.get_new_items()
         context['top_selling'] = self.get_top_selling()
         context['search_query'] = self.request.GET.get('title', '')
+        # Get the slug of the specific product
+        # product_slug = self.kwargs['slug']
+        
+        # Retrieve the categories related to the product with the given slug
+        # context['categories'] = categories
+    
         return context
+    
+    def get_cart_items_count(self):
+        # Logic to retrieve and return the count of items in the cart for the current user
+        cart = self.request.session.get('cart', {})
+        cart_items_count = sum(item_data.get('quantity', 0) for item_data in cart)
+        return cart_items_count
+    
+    def wishlist_items_count(self):
+        # Logic to retrieve and return the count of items in the wishlist for the current user
+        wishlist_items_count = 0
+        user = self.request.user
+        if user.is_authenticated:
+            wishlist_items_count = WishlistItem.objects.filter(wishlist__user=user).count()
+        return wishlist_items_count
 
-    # def get_cart_items(self):
-    #     # Logic to retrieve and return the items in the cart for the current user
-    #     cart = self.request.session.get('cart', {})
-    #     cart_items = []
-    #     for slug, item_data in cart.items():
-    #         product = get_object_or_404(Product, slug=slug)
-    #         cart_items.append({
-    #             'product': product,
-    #             'quantity': item_data.get('quantity', 0),
-    #             'variable_features': item_data.get('variable_features', {}),
-    #         })
-    #     return cart_items
+    
 
     def get_new_items(self):
         # Logic to retrieve and return the items in the items that are new for the current user

@@ -883,7 +883,9 @@ textarea.input {
 }
 
 .product .product-img>img {
-  width: 100%;
+  /* width: 100%; */
+  /* max-height: 1550px; */
+  width: 294px !important;
 }
 
 .product .product-img .product-label {
@@ -942,7 +944,7 @@ textarea.input {
   font-size: 18px;
 }
 
-.product .product-body .product-price .product-old-price {
+.product .product-body .product-old-price {
   font-size: 70%;
   font-weight: 400;
   color: #8D99AE;
@@ -1106,11 +1108,13 @@ textarea.input {
   position: absolute;
   left: 0px;
   top: 0px;
-  width: 60px;
+  width: 60px ;
+  /* max-width: 20px; */
 }
 
 .product-widget .product-img>img {
   width: 100%;
+  /* max-width: 20px; */
 }
 
 .product-widget .product-body {
