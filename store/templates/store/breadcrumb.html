@@ -1,0 +1,22 @@
+<!-- BREADCRUMB -->
+<div id="breadcrumb" class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <div class="col-md-12">
+                <ul class="breadcrumb-tree">
+                    <li>Home</li>
+                    <li>All Categories</li>
+                    {% for cat in product.categories.all  %}
+                    <li>{{ cat }}</li>
+                    {% endfor %}
+                    <li >{{ product.name }}</li>
+                </ul>
+            </div>
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /BREADCRUMB -->

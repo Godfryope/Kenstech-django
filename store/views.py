@@ -2,14 +2,18 @@ from django.views.generic import *
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Q
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from django.core.paginator import Paginator
+from django.db.models.functions import Coalesce
 from .models import *
+from .forms import *
 
 class ProductListView(ListView):
     model = Product
     template_name = 'store/index.html'
     context_object_name = 'products'
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -19,8 +23,7 @@ class ProductListView(ListView):
                 Q(name__icontains=search_query) |
                 Q(description__icontains=search_query)
             )
-        return queryset
-
+        return queryset.annotate(sales_count=Coalesce(Count('cartitem'), 0)).order_by('-sales')
     # def get_queryset(self):
     #     queryset = super().get_queryset()
     #     title = self.request.GET.get('title')
@@ -28,29 +31,49 @@ class ProductListView(ListView):
     #         queryset = queryset.filter(name__icontains=title)
     #     return queryset
 
+    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['cart_items'] = self.get_cart_items()
-        # context['wishlist_items'] = self.get_wishlist_items()
-        context['cart_items_count'] = self.get_cart_items_count()
+        # Retrieve the top selling products based on the count of times added to cart
+        top_selling = self.get_queryset()[:3]
+
+        # Retrieve the cart items count for the current user
+        cart = self.get_cart()
+        context['cart_items_count'] = cart.get_total_items()
+        context['top_selling'] = top_selling
         context['wishlist_items_count'] = self.wishlist_items_count()
         context['hot_deals'] = self.get_hot_deals()
         context['newitems'] = self.get_new_items()
-        context['top_selling'] = self.get_top_selling()
         context['search_query'] = self.request.GET.get('title', '')
-        # Get the slug of the specific product
-        # product_slug = self.kwargs['slug']
-        
-        # Retrieve the categories related to the product with the given slug
-        # context['categories'] = categories
     
         return context
     
-    def get_cart_items_count(self):
-        # Logic to retrieve and return the count of items in the cart for the current user
-        cart = self.request.session.get('cart', {})
-        cart_items_count = sum(item_data.get('quantity', 0) for item_data in cart)
-        return cart_items_count
+    def get_cart(self):
+        # Retrieve the cart object based on user or session
+        if self.request.user.is_authenticated:
+            # If the user is logged in, retrieve their cart
+            cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        else:
+            # If the user is anonymous, retrieve the cart from the session
+            cart_id = self.request.session.get('cart_id')
+            if cart_id:
+                cart = get_object_or_404(Cart, id=cart_id)
+            else:
+                cart = Cart.objects.create()
+                self.request.session['cart_id'] = cart.id
+
+        return cart
+    
+    def post(self, request, *args, **kwargs):
+        newsletter_form = NewsletterSubscriberForm(request.POST)
+        if newsletter_form.is_valid():
+            newsletter_form.save()
+            messages.success(request, 'Successfully subscribed to the newsletter!')
+        else:
+            messages.error(request, 'Failed to subscribe to the newsletter.')
+
+        return self.get(request, *args, **kwargs)
     
     def wishlist_items_count(self):
         # Logic to retrieve and return the count of items in the wishlist for the current user
@@ -83,14 +106,26 @@ class ProductListView(ListView):
 class ProductDetailView(TemplateView):
     model = Product
     context_object_name = 'product'
-    template_name = 'store/product_detail.html'
+    template_name = 'store/product.html'
+    related_products_per_page = 4
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         slug = self.kwargs['slug']
         product = get_object_or_404(Product, slug=slug)
         # quantity = CartItem.objects.filter(quantity)
+
+
+        # Retrieve the cart items count for the current user
+        cart = self.get_cart()
+        context['cart_items_count'] = cart.get_total_items()
         context['product'] = product
+        context['wishlist_items_count'] = self.wishlist_items_count()
+        related_products = self.get_related_products(product)
+        paginator = Paginator(related_products, self.related_products_per_page)
+        page_number = self.request.GET.get('page', 1)
+        page = paginator.get_page(page_number)
+        context['related_products'] = page
          # Retrieve the quantity from the cart if the item exists
         if self.request.user.is_authenticated:
             cart = Cart.objects.filter(user=self.request.user).first()
@@ -100,8 +135,40 @@ class ProductDetailView(TemplateView):
                     context['quantity'] = cart_item.quantity
 
         return context
+    
+    def get_related_products(self, product):
+        # Get related products from the same category
+        related_products = Product.objects.filter(categories__in=product.categories.all()).exclude(slug=product.slug)
+        related_products = related_products.order_by('-timestamp')
+        return related_products
+    
+    def wishlist_items_count(self):
+        # Logic to retrieve and return the count of items in the wishlist for the current user
+        wishlist_items_count = 0
+        user = self.request.user
+        if user.is_authenticated:
+            wishlist_items_count = WishlistItem.objects.filter(wishlist__user=user).count()
+        return wishlist_items_count
 
+
+    def get_cart(self):
+        # Retrieve the cart object based on user or session
+        if self.request.user.is_authenticated:
+            # If the user is logged in, retrieve their cart
+            cart, _ = Cart.objects.get_or_create(user=self.request.user)
+        else:
+            # If the user is anonymous, retrieve the cart from the session
+            cart_id = self.request.session.get('cart_id')
+            if cart_id:
+                cart = get_object_or_404(Cart, id=cart_id)
+            else:
+                cart = Cart.objects.create()
+                self.request.session['cart_id'] = cart.id
+
+        return cart
+    
     def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
         slug = self.kwargs['slug']
         product = get_object_or_404(Product, slug=slug)
         quantity = int(request.POST.get('quantity', 1))
@@ -124,7 +191,20 @@ class ProductDetailView(TemplateView):
             cart_item.save()
             cart.items.add(cart_item)
 
-        return redirect('cart')
+        # Display a success message for adding the item to the cart
+        messages.success(request, "Item added to cart successfully.")
+
+        # Subscribe to the newsletter
+        newsletter_form = NewsletterSubscriberForm(request.POST)
+        if newsletter_form.is_valid():
+            newsletter_form.save()
+            # Display a success message for subscribing to the newsletter
+            messages.success(request, "Successfully subscribed to the newsletter.")
+
+        # Include the newsletter form in the context
+        context['subscribetonewsletter'] = newsletter_form
+
+        return self.render_to_response(context)
 
 
 
@@ -135,11 +215,15 @@ class CartPageView(TemplateView):
         # Retrieve the cart object based on user or session
         if self.request.user.is_authenticated:
             # If the user is logged in, retrieve their cart
-            cart = get_object_or_404(Cart, user=self.request.user)
+            cart, _ = Cart.objects.get_or_create(user=self.request.user)
         else:
             # If the user is anonymous, retrieve the cart from the session
-            product_slug = self.request.session.get('product_slug')
-            cart = get_object_or_404(Cart, id=product_slug)
+            cart_id = self.request.session.get('cart_id')
+            if cart_id:
+                cart = get_object_or_404(Cart, id=cart_id)
+            else:
+                cart = Cart.objects.create()
+                self.request.session['cart_id'] = cart.id
 
         return cart
 

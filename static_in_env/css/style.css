@@ -381,6 +381,7 @@ textarea.input {
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
+  color: #8D99AE;
 }
 
 #breadcrumb .breadcrumb-tree li+li {
@@ -394,11 +395,11 @@ textarea.input {
   margin-right: 10px;
 }
 
-#breadcrumb .breadcrumb-tree li a {
+/* #breadcrumb .breadcrumb-tree li a {
   color: #8D99AE;
-}
+} */
 
-#breadcrumb .breadcrumb-tree li a:hover {
+#breadcrumb .breadcrumb-tree li:hover {
   color: #D10024;
 }
 
@@ -414,6 +415,16 @@ textarea.input {
   padding-top: 10px;
   padding-bottom: 10px;
   background-color: #1E1F29;
+}
+
+.message.success {
+  background-color: #ffffff;
+  color: #2a8e28;
+  border: 1px solid #85c47c;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 18px;
 }
 
 @media (max-width: 600px) {
@@ -880,12 +891,18 @@ textarea.input {
 
 .product .product-img {
   position: relative;
+  width: 100%; /* Set the desired width of the container */
+  height: 0; /* Set the initial height to 0 */
+  padding-bottom: 75%; /* Set the desired aspect ratio (height/width) */
 }
 
 .product .product-img>img {
-  /* width: 100%; */
-  /* max-height: 1550px; */
-  width: 294px !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Scale and crop the image to fill the container */
 }
 
 .product .product-img .product-label {
@@ -897,7 +914,7 @@ textarea.input {
 .product .product-img .product-label>span {
   border: 2px solid;
   padding: 2px 10px;
-  font-size: 12px;
+  font-size: 9px;
 }
 
 .product .product-img .product-label>span.sale {
@@ -943,6 +960,7 @@ textarea.input {
   color: #D10024;
   font-size: 18px;
 }
+
 
 .product .product-body .product-old-price {
   font-size: 70%;
@@ -2162,6 +2180,7 @@ textarea.input {
   #top-header .header-links.pull-left {
     float: none !important;
   }
+
   #top-header .header-links.pull-right {
     float: none !important;
     margin-top: 5px;

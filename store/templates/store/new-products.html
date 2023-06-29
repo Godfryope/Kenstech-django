@@ -50,7 +50,7 @@
                 <div class="row">
                     {% for product in products %}
                     <!-- product -->
-                    <div class="col-md-4 col-xs-6">
+                    <div class="col-md-3 col-xs-6">
                         <div class="product">
                             {% if product.images.exists %}
                             <div class="product-img">
@@ -86,11 +86,11 @@
                                     {% if product.images.exists %}
                                     <button class="quick-view"><a href="{{ product.images.first.image.url }}"><i class="fa fa-eye"></i></a><span class="tooltipp">quick view</span></button>
                                     {% endif %}
-                                </div>
+                                </div> 
                             </div>
-                            <div class="add-to-cart">
+                            {% comment %} <div class="add-to-cart">
                                 <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-                            </div>
+                            </div> {% endcomment %}
                         </div>
                     </div>
                     <!-- /product -->

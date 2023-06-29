@@ -15,6 +15,8 @@ class Product(models.Model):
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category)
+    related_products = models.ManyToManyField('self', blank=True)
+    timestamp = models.TimeField(auto_now=False, auto_now_add=True)
     description = models.TextField()
     details = models.TextField()
     # size = models.CharField(max_length=20, blank=True, null=True)
@@ -34,6 +36,10 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('product_detail', kwargs={'slug': self.slug})
     
+    # def save(self, *args, **kwargs):
+    #     self.sales = self.cartitem_set.aggregate(total_count=models.Sum('quantity'))['total_count'] or 0
+    #     super().save(*args, **kwargs)
+    
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -50,6 +56,9 @@ class ProductImage(models.Model):
     
 class NewsletterSubscriber(models.Model):
     email = models.EmailField()
+
+    def __str__(self):
+        return self.email
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
