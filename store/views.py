@@ -40,7 +40,7 @@ class ProductListView(ListView):
 
         # Retrieve the cart items count for the current user
         cart = self.get_cart()
-        context['cart_items_count'] = cart.get_total_items()
+        context['cart_items_count'] = cart.get_total_items() if cart else 0
         context['top_selling'] = top_selling
         context['wishlist_items_count'] = self.wishlist_items_count()
         context['hot_deals'] = self.get_hot_deals()
@@ -118,7 +118,7 @@ class ProductDetailView(TemplateView):
 
         # Retrieve the cart items count for the current user
         cart = self.get_cart()
-        context['cart_items_count'] = cart.get_total_items()
+        context['cart_items_count'] = cart.get_total_items() if cart else 0
         context['product'] = product
         context['wishlist_items_count'] = self.wishlist_items_count()
         related_products = self.get_related_products(product)
@@ -133,6 +133,12 @@ class ProductDetailView(TemplateView):
                 cart_item = cart.items.filter(product=product).first()
                 if cart_item:
                     context['quantity'] = cart_item.quantity
+                else:
+                    context['quantity'] = 0
+            else:
+                context['quantity'] = 0
+        else:
+            context['quantity'] = 0
 
         return context
     
@@ -166,7 +172,7 @@ class ProductDetailView(TemplateView):
                 self.request.session['cart_id'] = cart.id
 
         return cart
-    
+        
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         slug = self.kwargs['slug']
