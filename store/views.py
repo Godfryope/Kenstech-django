@@ -179,9 +179,11 @@ class ProductDetailView(TemplateView):
         product = get_object_or_404(Product, slug=slug)
         quantity = int(request.POST.get('quantity', 1))
 
-        # Get or create the user's cart
         user = self.request.user
-        cart, created = Cart.objects.get_or_create(user=user)
+        if user.is_authenticated:
+            cart, _ = Cart.objects.get_or_create(user=user)
+        else:
+            cart, _ = Cart.objects.get_or_create()
 
         # Check if the item is already in the cart
         cart_item, item_created = CartItem.objects.get_or_create(user=user, product=product)
@@ -196,9 +198,10 @@ class ProductDetailView(TemplateView):
             cart_item.quantity = quantity
             cart_item.save()
             cart.items.add(cart_item)
+            # Display a success message for adding the item to the cart
+            messages.success(request, "Item added to cart successfully.")
 
-        # Display a success message for adding the item to the cart
-        messages.success(request, "Item added to cart successfully.")
+        
 
         # Subscribe to the newsletter
         newsletter_form = NewsletterSubscriberForm(request.POST)
@@ -240,4 +243,7 @@ class CartPageView(TemplateView):
         context['cart_items'] = cart_items
         context['total_price'] = cart.get_total_price()
         return context
+    
+# class SignupView(TemplateView):
+#     template_name = 'store/signup.html'
 

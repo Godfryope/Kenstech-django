@@ -1,6 +1,36 @@
 {% load static %}
 
 <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var products = document.querySelectorAll('.product');
+  
+    function isElementInViewport(el) {
+      var rect = el.getBoundingClientRect();
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    }
+  
+    function handleScroll() {
+      for (var i = 0; i < products.length; i++) {
+        if (isElementInViewport(products[i])) {
+          products[i].classList.add('bounce');
+        }
+      }
+    }
+  
+    window.addEventListener('scroll', handleScroll);
+  });
+
+
+  
+</script>  
+
+<script>
     // Get the HTML elements for countdown values
     const daysElement = document.getElementById('days');
     const hoursElement = document.getElementById('hours');

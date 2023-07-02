@@ -2,31 +2,7 @@
 
 <!-- HEADER -->
 <header>
-    <!-- TOP HEADER -->
-    <div id="top-header">
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        <div class="container">
-            <ul class="header-links pull-left">
-                <a href="mailto:"></a>
-                <li><a href="tel:+234 812 055 0112"><i class="fa fa-phone"></i> +234 812 055 0112</a></li>
-                <li><a href="mailto:info@kenstech.com"><i class="fa fa-envelope-o"></i> info@kenstech.com</a></li>
-                <li><a href=""><i class="fa fa-map-marker"></i> Good brother plaza beside com. prize s/mart opp. oruerue plaza, uromi, edo state</a></li>
-            </ul>
-            <ul class="header-links pull-right">
-                <!-- <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> -->
-                <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
-            </ul>
-        </div>
-    </div>
-    <!-- /TOP HEADER -->
+    {% include 'store/top-header.html' %}
 
     <!-- MAIN HEADER -->
     <div id="header">
@@ -61,7 +37,7 @@
                         <!-- /Wishlist -->
                         <!-- Cart -->
                         <div class="dropdown">
-                            <a href="/">
+                            <a href="{% url 'cart' %}">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span>Your Cart</span>
                                 <div class="qty">{{ cart_items_count }}</div>
