@@ -9,44 +9,57 @@
 {% endblock head_title %}
 
 {% block content %}
-  {% include 'store/top-header.html' %}
+<section class="login"> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> 
 
-  <div class="signup-section">
-    <div class="signup-form">
-      <form method="POST" action="{% url 'account_signup' %}">
-        {% csrf_token %}
-        <div class="form-group">
-          <label for="id_username">Username:</label>
-          {{ form.username }}
-          {% if form.errors.username %}
-            <p class="error">{{ form.errors.username }}</p>
-          {% endif %}
-        </div>
-        <div class="form-group">
-          <label for="id_email">Email:</label>
-          {{ form.email }}
-          {% if form.errors.email %}
-            <p class="error">{{ form.errors.email }}</p>
-          {% endif %}
-        </div>
-        <div class="form-group">
-          <label for="id_password1">Password:</label>
-          {{ form.password1 }}
-          {% if form.errors.password1 %}
-            <p class="error">{{ form.errors.password1 }}</p>
-          {% endif %}
-        </div>
-        <div class="form-group">
-          <label for="id_password2">Confirm Password:</label>
-          {{ form.password2 }}
-          {% if form.errors.password2 %}
-            <p class="error">{{ form.errors.password2 }}</p>
-          {% endif %}
-        </div>
-        <button type="submit" class="signup-btn">Sign Up</button>
-      </form>
+  <div class="signin">
+    <div class="content">
+      <h2>Sign Up</h2>
+      <div class="form">
+        <form method="POST">
+          {% csrf_token %}
+          <div class="inputBox">
+            {{ form.username }}
+            <i>Username</i>
+            {% if form.username.errors %}
+            <p class="error">{{ form.username.errors }}</p>
+            {% endif %}
+          </div>
+          <div class="inputBox">
+            {{ form.email }}
+            <i>Email</i>
+            {% if form.email.errors %}
+            <p class="error">{{ form.email.errors }}</p>
+            {% endif %}
+          </div>
+          <div class="inputBox">
+            {{ form.password1 }}
+            <i>Password</i>
+            {% if form.password1.errors %}
+            <p class="error">{{ form.password1.errors }}</p>
+            {% endif %}
+          </div>
+          <div class="inputBox">
+            {{ form.password2 }}
+            <i>Confirm Password</i>
+            {% if form.password2.errors %}
+            <p class="error ">{{ form.password2.errors }}</p>
+            {% endif %}
+          </div>
+          <div class="links">
+            <a href="#">Forgot Password</a>
+            <a href="#">Sign In</a>
+          </div>
+          <div class="inputBox">
+            <input type="submit" value="Sign Up">
+          </div>
+        </form>
+      </div>
     </div>
   </div>
+  
+  
 
-  {% include 'store/footer.html' %}
+</section>
+
+  {% comment %} {% include 'store/footer.html' %} {% endcomment %}
 {% endblock content %}

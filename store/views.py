@@ -15,6 +15,12 @@ class ProductListView(ListView):
     context_object_name = 'products'
     paginate_by = 20
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            # If the user is not authenticated, redirect to the login page
+            return redirect(reverse('account_login'))
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('search')

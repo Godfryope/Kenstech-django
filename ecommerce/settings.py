@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-cf!6l2frq#=jaku50r*v9f32!#4t54u5+kdxf72p5vj=il%&7@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.150.123', '*']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -167,19 +169,19 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-# Provider specific settings
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '123',
-            'secret': '456',
-            'key': ''
-        }
-    }
-}
+# # Provider specific settings
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         # For each OAuth based provider, either add a ``SocialApp``
+#         # (``socialaccount`` app) containing the required client
+#         # credentials, or list them here:
+#         'APP': {
+#             'client_id': '123',
+#             'secret': '456',
+#             'key': ''
+#         }
+#     }
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -190,6 +192,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 ROOT_URLCONF = 'ecommerce.urls'
 
@@ -203,9 +208,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [# include django's form templates
-            os.path.join(
-                os.path.dirname(django.__file__), "forms/templates/"
-            ),
+            # os.path.join(
+            #     os.path.dirname(django.__file__), "forms/templates/"
+            # ),
             os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {

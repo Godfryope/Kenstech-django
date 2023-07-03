@@ -3,9 +3,9 @@
     <div class="header-search">
         <form method="GET" action="{% url 'product_list' %}">
             <select class="input-select" name="category">
-                <option value="0">All Categories</option>
-                {% for category in categories %}
-                <option value="{{ category.id }}">{{ category.name }}</option>
+                <option value="0">Categories</option>
+                {% for category in product.categories.all %}
+                <option value="{{ category.slug }}">{{ category.name }}</option>
                 {% endfor %}
             </select>
             <input class="input" type="text" name="search" placeholder="Search here" value="{{ search_query }}">
