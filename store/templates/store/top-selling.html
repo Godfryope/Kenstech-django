@@ -19,9 +19,11 @@
                         {% for product in top_selling %}
                         <!-- product widget -->
                         <div class="product-widget">
+                            {% if product.images.exists %}
                             <div class="product-img">
-                                <img src="{% static 'img/product01.png' %}" alt="">
+                                <img src="{{ product.images.first.image.url }}" alt="">
                             </div>
+                            {% endif %}
                             <div class="product-body">
                                 {% for category in product.categories.all %}
                                 <p class="product-category">{{ category.name }}</p>
