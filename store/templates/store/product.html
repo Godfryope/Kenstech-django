@@ -1,4 +1,6 @@
 {% extends 'store/base.html' %}
+{% load humanize %}
+
 
 	{% block content %}
 		{% include 'store/header.html' %}
@@ -23,7 +25,7 @@
 							</div> {% endcomment %}
 							{% for image in product.images.all %}
 							<div class="product-preview">
-								<img src="{{ image.image.url }}" alt="">
+								<img src="{{ image.image.url }}" alt=""  class="img-fluid">
 							</div>
 							{% endfor %}
 						</div>
@@ -48,9 +50,9 @@
 					<!-- Product details -->
 					<div class="col-md-5">
 						<div class="product-details">
-							<h2 class="product-nam./product.html">{{ product.name }}</h2>
+							<h2 class="fs-3 product-name">{{ product.name }}</h2>
 							<div>
-								<div class="product-rating">
+								<div class="fs-5 product-rating">
 									<i class="fa fa-star"></i>
 									<i class="fa fa-star"></i>
 									<i class="fa fa-star"></i>
@@ -59,14 +61,14 @@
 								</div>
 								{% comment %} <a class="review-link" href="#">10 Review(s) | Add your review</a> {% endcomment %}
 							</div>
-							<div>
+							<div >
 								{% if product.discount %}
-								<h3 class="product-price">&#8358;{{ product.discount_price }} 
-									<del class="product-old-price">&#8358;{{ product.price }}</del>
+								<h3 class="product-price fs-4 ">&#8358;{{ product.discount_price|intcomma }} 
+									<del class="product-old-price">&#8358;{{ product.price|intcomma }}</del>
 								</h3>
 								{% else %}
-								<h3 class="product-price">&#8358;{{ product.price }} 
-									<del class="product-old-price">&#8358;{{ product.discount_price }}</del>
+								<h3 class="product-price fs-4">&#8358;{{ product.price|intcomma }} 
+									<del class="product-old-price">&#8358;{{ product.discount_price|intcomma }}</del>
 								</h3>
 								{% endif %}
 								<span class="product-available">In Stock</span>

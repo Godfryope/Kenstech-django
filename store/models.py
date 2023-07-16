@@ -2,12 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.text import slugify
-from django.dispatch import receiver
-from svglib.svglib import svg2rlg
-from reportlab.graphics import renderPM
-import os
-import tempfile
-from wand.image import Image
+# from django.dispatch import receiver
+# from svglib.svglib import svg2rlg
+# from reportlab.graphics import renderPM
+# import os
+# import tempfile
+# from wand.image import Image
+
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -17,8 +19,8 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    discount_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    price = models.IntegerField()
+    discount_price = models.IntegerField(default=0)
     discount = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category)
     related_products = models.ManyToManyField('self', blank=True)
@@ -53,17 +55,17 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
 
-def convert_image_to_svg(image_path):
-    # Create a temporary file with .svg extension
-    _, temp_svg_path = tempfile.mkstemp(suffix='.svg')
+# def convert_image_to_svg(image_path):
+#     # Create a temporary file with .svg extension
+#     _, temp_svg_path = tempfile.mkstemp(suffix='.svg')
 
-    # Convert the image to SVG format using wand library
-    with Image(filename=image_path) as img:
-        img.format = 'svg'
-        img.save(filename=temp_svg_path)
+#     # Convert the image to SVG format using wand library
+#     with Image(filename=image_path) as img:
+#         img.format = 'svg'
+#         img.save(filename=temp_svg_path)
 
-    # Return the path of the converted SVG file
-    return temp_svg_path
+#     # Return the path of the converted SVG file
+#     return temp_svg_path
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
@@ -75,13 +77,13 @@ class ProductImage(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        # Convert the uploaded image to SVG format
-        if self.image and not self.image:
-            svg_path = convert_image_to_svg(self.image.path)
-            self.image.save(os.path.basename(svg_path), open(svg_path, 'rb'))
+        # # Convert the uploaded image to SVG format
+        # if self.image and not self.image:
+        #     svg_path = convert_image_to_svg(self.image.path)
+        #     self.image.save(os.path.basename(svg_path), open(svg_path, 'rb'))
 
-            # Remove the temporary SVG file
-            os.remove(svg_path)
+        #     # Remove the temporary SVG file
+        #     os.remove(svg_path)
 
         super().save(*args, **kwargs)
 
@@ -125,7 +127,11 @@ class Cart(models.Model):
         return self.items.count()
 
     def get_subtotal(self):
-        subtotal = sum(item.product.price * item.quantity for item in self.items.all())
+        subtotal = sum(
+            item.product.discount_price * item.quantity if item.product.discount else item.product.price * item.quantity
+            for item in self.items.all()
+        )
+        # subtotal = sum(item.product.price * item.quantity for item in self.items.all())
         return subtotal
 
     def get_total_price(self):

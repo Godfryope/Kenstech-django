@@ -1,53 +1,220 @@
-{% extends 'store/base.html' %}
+{% extends 'store/base.html' %} 
+{% load humanize %} 
+{% block content %} 
+{% include 'store/header.html' %} {% include 'store/navigation.html' %}
 
-
-	{% block content %}
-		{% include 'store/header.html' %}
-		{% include 'store/navigation.html' %}
-
-
-		<div class="cart">
-			<div class="cart-list">
-				{% for cart_item in cart_items %}
-				<div class="product-widget">
-					<div class="product-img">
-						{% if cart_item.product.images.exists %}
-						<img src="{{ cart_item.product.images.first.image.url }}" alt="{{ cart_item.product.name }}">
-						{% endif %}
+<div class="cart">
+	<section class="h-100 gradient-custom">
+		<div class="container py-5">
+			<div class="row d-flex justify-content-center my-4">
+				<div class="col-md-8">
+					<div class="card mb-4">
+						<div class="card-header py-3">
+							<h5 class="mb-0">Cart - {{ cart_items|length }} item(s)</h5>
+						</div>
+						<div class="card-body">
+							{% for cart_item in cart_items %}
+							<!-- Single item -->
+							<div class="row my-5">
+								<div class="col-lg-3 col-md-3 mb-4 mb-lg-0">
+									<!-- Image -->
+									<div class="bg-image hover-overlay hover-zoom ripple rounded"
+										data-mdb-ripple-color="light">
+										<img src="{{ cart_item.product.images.first.image.url }}"
+											class="w-100" alt="{{ cart_item.product.name }}" />
+										<a href="#!">
+											<div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+										</a>
+									</div>
+									<!-- Image -->
+								</div>
+	
+								<div class="col-lg-5 col-md-4 mb-4 mb-lg-0">
+									<!-- Data -->
+									<p><a href="{{ cart_item.product.get_absolute_url }}"><strong>{{ cart_item.product.name }}</strong></a></p>
+									{% for category in cart_item.product.categories.all %}
+									<p>Category: {{ category.name }}</p>
+									{% endfor %}
+									{% comment %} <p>Size: {{ cart_item.product.size }}</p> {% endcomment %}
+									<form method="post">
+										{% csrf_token %}
+										<input type="hidden" name="item_id" value="{{ cart_item.id }}" />
+										<button type="submit" style="background:#008080; "
+											class="btn text-white btn-sm me-1 mb-2" data-mdb-toggle="tooltip"
+											title="Remove item">
+											<i class="fas fa-trash"></i>
+										</button>
+										<button type="button" style="background:Coral;"
+											class="btn text-white btn-sm mb-2" data-mdb-toggle="tooltip"
+											title="Move to the wish list">
+											<i class="fas fa-heart"></i>
+										</button>
+									</form>
+									<!-- Data -->
+								</div>
+	
+								<div class="col-lg-4 col-md-4 mb-4 mb-lg-0">
+									<!-- Quantity -->
+									<div class="d-flex mb-4" style="max-width: 300px">
+										<button style="background:#008080; " class="btn text-white px-3 me-2"
+											onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+											<i class="fas fa-minus"></i>
+										</button>
+	
+										<div class="form-outline">
+											<input id="form1" min="0" name="quantity" value="{{ cart_item.quantity }}"
+												type="number" class="form-control" />
+											<!-- <label class="form-label" for="form1">Quantity</label> -->
+										</div>
+	
+										<button style="background:#008080; " class="btn text-white px-3 ms-2"
+											onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+											<i class="fas fa-plus"></i>
+										</button>
+									</div>
+									<!-- Quantity -->
+	
+									<!-- Price -->
+									<p class="text-start text-md-center">
+										<strong>${{ cart_item.product.price }}</strong>
+									</p>
+									<!-- Price -->
+								</div>
+							</div>
+							<!-- Single item -->
+							{% endfor %}
+	
+							<hr class="my-4" />
+	
+							<div class="card mb-4">
+								<div class="card-body">
+									<p><strong>Expected shipping delivery</strong></p>
+									<p class="mb-0">12.10.2020 - 14.10.2020</p>
+								</div>
+							</div>
+							<div class="card mb-4 mb-lg-0">
+								<div class="card-body">
+									<p><strong>We accept</strong></p>
+									<img class="me-2" width="45px"
+										src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+										alt="Visa" />
+									<img class="me-2" width="45px"
+										src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+										alt="American Express" />
+									<img class="me-2" width="45px"
+										src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+										alt="Mastercard" />
+									<img class="me-2" width="45px"
+										src="https://www.paypalobjects.com/digitalassets/c/website/marketing/apac/C2/logos-buttons/optimize/Online_Primary_Acceptance_Mark_RGB_V2_medium.jpg"
+										alt="PayPal acceptance mark" />
+								</div>
+							</div>
+						</div>
 					</div>
-					<div class="product-body">
-						<h3 class="product-name"><a href="{{ cart_item.product.get_absolute_url }}">{{ cart_item.product.name }}</a></h3>
-
-						<h4 class="product-price">
-							<span class="qty">{{ cart_item.quantity }}x</span>
-							{% if cart_item.product.discount %}
-							&#8358;{{ cart_item.product.discount_price }}
-							{% else %}
-							&#8358;{{ cart_item.product.price }}
-							{% endif %}
-						</h4>
+				</div>
+				<div class="col-md-4">
+					<div class="card mb-4">
+						<div class="card-header py-3">
+							<h5 class="mb-0">Summary</h5>
+						</div>
+						<div class="card-body">
+							<ul class="list-group list-group-flush">
+								<li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+									Products
+									<span>${{ total_price }}</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center px-0">
+									Shipping
+									<span>Gratis</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+									<div>
+										<strong>Total amount</strong>
+										<strong>
+											<p class="mb-0">(including VAT)</p>
+										</strong>
+									</div>
+									<span><strong>${{ total_price }}</strong></span>
+								</li>
+							</ul>
+	
+							{% comment %} <a href="{% url 'checkout' %}" {% endcomment %}
+							<a href=""
+								style="background:#008080;" class="btn text-white btn-lg btn-block">
+								Go to checkout
+							</a>
+						</div>
 					</div>
-					<button class="delete" onclick="removeFromCart({{ cart_item.id }})"><i class="fa fa-close"></i></button>				</div>
-				{% endfor %}
-			</div>
-			<div class="cart-summary">
-				<small>{{ cart_items_count }} Item(s) selected</small>
-				<h5>SUBTOTAL: &#8358;{{ total_price }}</h5>
-			</div>
-			<div class="cart-btns">
-				<a href="{% url 'cart' %}">View Cart</a>
-				<a href="/">Checkout <i class="fa fa-arrow-circle-right"></i></a>
-				{% comment %} <a href="{% url 'checkout' %}">Checkout <i class="fa fa-arrow-circle-right"></i></a> {% endcomment %}
+				</div>
 			</div>
 		</div>
-		
-
-		{% include 'store/footer.html' %}
+	</section>
 	
-	{% endblock content %}
+  {% comment %}
+  <div class="cart-list">
+    {% for cart_item in cart_items %}
+    <div class="product-widget">
+      <div class="product-info">
+        <div class="product-img">
+          {% if cart_item.product.images.exists %}
+          <img
+            src="{{ cart_item.product.images.first.image.url }}"
+            alt="{{ cart_item.product.name }}"
+          />
+          {% endif %}
+        </div>
+        <div class="product-body">
+          <h3 class="product-name">
+            <a href="{{ cart_item.product.get_absolute_url }}"
+              >{{ cart_item.product.name }}</a
+            >
+          </h3>
+          <h4 class="product-price">
+            <span class="qty">{{ cart_item.quantity }}x</span>
+            {% if cart_item.product.discount %} &#8358;{{
+            cart_item.product.discount_price|intcomma }} {% else %} &#8358;{{
+            cart_item.product.price|intcomma }} {% endif %}
+          </h4>
+        </div>
+      </div>
+      <div class="cart-actions">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="item_id" value="{{ cart_item.id }}" />
+          <div class="qty-label">
+            Qty
+            <div class="input-number">
+              <input
+                name="quantity"
+                value="{{ cart_item.quantity }}"
+                type="number"
+              />
+              <span class="qty-up">+</span>
+              <span class="qty-down">-</span>
+            </div>
+          </div>
+          <button type="submit" class="remove-from-cart-btn">
+            <i class="fa fa-close"></i> Remove
+          </button>
+        </form>
+      </div>
+    </div>
 
-		
+    {% endfor %}
+	<div class="cart-summary">
+            <small>{{ cart_items_count }} Item(s) selected</small>
+            <h5>SUBTOTAL: &#8358;{{ total_price|intcomma }}</h5>
+          </div>
+          <div class="cart-btns">
+            <a href="{% url 'cart' %}">View Cart</a>
+            <a href="/">Checkout <i class="fa fa-arrow-circle-right"></i></a>
+            {% comment %}
+            <a href="{% url 'checkout' %}"
+              >Checkout <i class="fa fa-arrow-circle-right"></i
+            ></a>
+		</div>
+  </div>
+  {% endcomment %}
+</div>
 
-		
-
-		
+{% include 'store/footer.html' %} {% endblock content %}

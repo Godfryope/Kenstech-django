@@ -1,122 +1,153 @@
-{% load static %}
+    {% load static %}
+    {% load humanize %}
 
-<!-- SECTION -->
-<div class="section">
-    <!-- container -->
-    <div class="container">
-        <!-- row -->
-        <div class="row">
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
 
-            <!-- section title -->
-            <div class="col-md-12">
-                <div id="newproduct" class="section-title">
-                    <h3 class="title">New Products</h3>
-                    <div class="section-nav">
-                        <div class="store-sort">
-                            <label>
-                                Sort By:
-                                <select class="input-select">
-                                    <option value="0">Popular</option>
-                                    <option value="1">Position</option>
-                                </select>
-                            </label>
+                <!-- section title -->
+                <div class="col-md-12">
+                    <div id="newproduct" class="section-title">
+                        <h3 class="title">New Products</h3>
+                        <div class="section-nav">
+                            <div class="store-sort">
+                                <label>
+                                    Sort By:
+                                    <select class="input-select">
+                                        <option value="0">Popular</option>
+                                        <option value="1">Position</option>
+                                    </select>
+                                </label>
 
-                            <label>
-                                Show:
-                                <select class="input-select">
-                                    <option value="0">20</option>
-                                    <option value="1">50</option>
-                                </select>
-                            </label>
+                                <label>
+                                    Show:
+                                    <select class="input-select" onchange="location = this.value;">
+                                        <option value="{% url 'product_list' %}?show=10" {% if show_option == '10' %} selected {% endif %}>10</option>
+                                        <option value="{% url 'product_list' %}?show=20" {% if show_option == '20' %} selected {% endif %}>20</option>
+                                        <option value="{% url 'product_list' %}?show=30" {% if show_option == '30' %} selected {% endif %}>30</option>
+                                        <option value="{% url 'product_list' %}?show=40" {% if show_option == '40' %} selected {% endif %}>40</option>
+                                        <option value="{% url 'product_list' %}?show=50" {% if show_option == '50' %} selected {% endif %}>50</option>
+                                    </select>
+                                </label>                                
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- /section title -->
+                <!-- /section title -->
 
-            <!-- STORE -->
-            <div id="store" class="col-md-12">
-                <!-- store top filter -->
-                <div class="store-filter clearfix">
-                    
-                    <!-- <ul class="store-grid">
-                        <li class="active"><i class="fa fa-th"></i></li>
-                        <li><a href="#"><i class="fa fa-th-list"></i></a></li>
-                    </ul> -->
-                </div>
-                <!-- /store top filter -->
+                <!-- STORE -->
+                <div id="store" class="col-md-12">
+                    <!-- store top filter -->
+                    <div class="store-filter clearfix">
+                        
+                        <!-- <ul class="store-grid">
+                            <li class="active"><i class="fa fa-th"></i></li>
+                            <li><a href="#"><i class="fa fa-th-list"></i></a></li>
+                        </ul> -->
+                    </div>
+                    <!-- /store top filter -->
 
-                <!-- store products -->
-                <div class="row">
-                    {% for product in products %}
-                    <!-- product -->
-                    <div class="col-md-3 col-2 col-xs-6">
-                        <div class="product">
-                            {% if product.images.exists %}
-                            <div class="product-img">
-                                <img src="{{ product.images.first.image.url }}" alt="">
-                                <div class="product-label">
-                                    <span class="sale">-30%</span>
-                                    <span class="new">NEW</span>
+                    <!-- store products -->
+                    <div class="row">
+                        {% for product in products %}
+                        <!-- product -->
+                        <div class="col-lg-3">
+                            <div class="product">
+                                <!-- Product image -->
+                                {% if product.images.exists %}
+                                <div class="product-img">
+                                    <img src="{{ product.images.first.image.url }}" alt="">
+                                    <div class="product-label">
+                                        <span class="sale">-30%</span>
+                                        <span class="new">NEW</span>
+                                    </div>
                                 </div>
-                            </div>
-                            {% endif %} 
-                            <div class="product-body">
-                                {% for category in product.categories.all %}
-                                    <p class="product-category">{{ category.name }}</p>
-                                {% endfor %}
-                                <h3 class="product-name"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
-                                {% if product.discount %}
-                                <h4 class="product-price">&#8358;{{ product.discount_price }} </h4>
-                                <h4><del class="product-old-price">&#8358;{{ product.price }}</del></h4>
-                                {% else %}
-                                <h4 class="product-price">&#8358;{{ product.price }} </h4>
-                                <h4><del class="product-old-price">&#8358;{{ product.discount_price }}</del></h4>
                                 {% endif %}
-                                <div class="product-rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product-btns">
-                                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
-                                    <button class="add-to-compare"><i class="fa fa-shopping-cart"></i><span class="tooltipp">add to cart</span></button>
-                                    {% if product.images.exists %}
-                                    <button class="quick-view"><a href="{{ product.images.first.image.url }}"><i class="fa fa-eye"></i></a><span class="tooltipp">quick view</span></button>
+                        
+                                <!-- Product details -->
+                                <div class="product-body">
+                                    {% for category in product.categories.all %}
+                                    <p class="product-category">{{ category.name }}</p>
+                                    {% endfor %}
+                                    <h3 class="product-name"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                        
+                                    {% if product.discount %}
+                                    <h4 class="product-price">&#8358;{{ product.discount_price|intcomma }}</h4>
+                                    <h4><del class="product-old-price">&#8358;{{ product.price|intcomma }}</del></h4>
+                                    {% else %}
+                                    <h4 class="product-price">&#8358;{{ product.price|intcomma }}</h4>
+                                    <h4><del class="product-old-price">&#8358;{{ product.discount_price|intcomma }}</del></h4>
                                     {% endif %}
-                                </div> 
+                        
+                                    <div class="product-rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                        
+                                    <div class="product-btns">
+                                        <button class="add-to-wishlist">
+                                            <i class="fa fa-heart-o"></i>
+                                            <span class="tooltipp">add to wishlist</span>
+                                        </button>
+                                        <button class="add-to-compare">
+                                            <i class="fa fa-shopping-cart"></i>
+                                            <span class="tooltipp">add to cart</span>
+                                        </button>
+                                        {% if product.images.exists %}
+                                        <button class="quick-view">
+                                            <a href="{{ product.images.first.image.url }}">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            <span class="tooltipp">quick view</span>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
-                            {% comment %} <div class="add-to-cart">
-                                <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
-                            </div> {% endcomment %}
-                        </div>
+                        </div>                        
+                        <!-- /product -->
+                        {% endfor %}
+
+                        
                     </div>
-                    <!-- /product -->
-                    {% endfor %}
+                    <!-- /store products -->
 
-                    
-                </div>
-                <!-- /store products -->
+                    <!-- store bottom filter -->
+                    <div class="store-filter clearfix">
+                        {% comment %} <span class="store-qty">Showing {{ products_start }}-{{ products_end }} of {{ total_products }} products</span> {% endcomment %}
+                        <ul class="store-pagination">
+                            {% if page_obj.has_previous %}
+                                <li><a href="?page=1"><i class="fa fa-angle-double-left"></i></a></li>
+                                <li><a href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
+                            {% endif %}
 
-                <!-- store bottom filter -->
-                <div class="store-filter clearfix">
-                    <span class="store-qty">Showing 20-100 products</span>
-                    <ul class="store-pagination">
-                        <li class="active">1</li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                    </ul>
+                            {% for i in page_obj.paginator.page_range %}
+                                {% if page_obj.number == i %}
+                                    <li class="active"><a href="?page={{ i }}">{{ i }}</a></li>
+                                {% else %}
+                                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li><a href="?page={{ page_obj.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+                                <li><a href="?page={{ page_obj.paginator.num_pages }}"><i class="fa fa-angle-double-right"></i></a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <!-- /store bottom filter -->
+
                 </div>
-                <!-- /store bottom filter -->
+                <!-- /STORE -->
             </div>
-            <!-- /STORE -->
+            <!-- /row -->
         </div>
-        <!-- /row -->
+        <!-- /container -->
     </div>
-    <!-- /container -->
-</div>
-<!-- /SECTION -->
+    <!-- /SECTION -->

@@ -15,148 +15,54 @@
                 </div>
 
                 <div class="products-widget-slick" data-nav="#slick-nav-3">
+                    {% for product in top_selling %}
                     <div>
-                        {% for product in top_selling %}
                         <!-- product widget -->
                         <div class="product-widget">
                             {% if product.images.exists %}
                             <div class="product-img">
-                                <img src="{{ product.images.first.image.url }}" alt="">
+                                <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
                             </div>
                             {% endif %}
                             <div class="product-body">
-                                {% for category in product.categories.all %}
-                                <p class="product-category">{{ category.name }}</p>
-                                {% endfor %}
-                                <h3 class="product-name"><a href="./product.html">{{ product.name }}</a></h3>
-                                {% if product.discount %}
-                                <h4 class="product-price">&#8358;{{ product.discount_price }} <del class="product-old-price">&#8358;{{ product.price }}</del></h4>
-                                {% else %}
-                                <h4 class="product-price">&#8358;{{ product.price }} <del class="product-old-price">&#8358;{{ product.discount_price }}</del></h4>
-                                {% endif %}
+                                <p class="product-category">{{ product.categories.first.name }}</p>
+                                <h3 class="product-name"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                                <h4 class="product-price">${{ product.discount_price|default:product.price }} <del class="product-old-price">${{ product.price }}</del></h4>
                             </div>
                         </div>
                         <!-- /product widget -->
-                        {% endfor %}
-
                     </div>
-
-                    <div>
-                        {% for product in top_selling %}
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product01.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                {% for category in product.categories.all %}
-                                <p class="product-category">{{ category.name }}</p>
-                                {% endfor %}
-                                <h3 class="product-name"><a href="./product.html">{{ product.name }}</a></h3>
-                                {% if product.discount %}
-                                <h4 class="product-price">&#8358;{{ product.discount_price }} <del class="product-old-price">&#8358;{{ product.price }}</del></h4>
-                                {% else %}
-                                <h4 class="product-price">&#8358;{{ product.price }} <del class="product-old-price">&#8358;{{ product.discount_price }}</del></h4>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <!-- /product widget -->
-                        {% endfor %}
-
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
             <div class="col-md-4 col-xs-6">
                 <div class="section-title">
-                    <h4 class="title">Top selling</h4>
+                    <h4 class="title">Hot Deals</h4>
                     <div class="section-nav">
                         <div id="slick-nav-4" class="products-slick-nav"></div>
                     </div>
                 </div>
 
                 <div class="products-widget-slick" data-nav="#slick-nav-4">
+                    {% for product in hot_deals %}
                     <div>
                         <!-- product widget -->
                         <div class="product-widget">
+                            {% if product.images.exists %}
                             <div class="product-img">
-                                <img src="{% static 'img/product04.png' %}" alt="">
+                                <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
                             </div>
+                            {% endif %}
                             <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
+                                <p class="product-category">{{ product.categories.first.name }}</p>
+                                <h3 class="product-name"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                                <h4 class="product-price">${{ product.discount_price|default:product.price }} <del class="product-old-price">${{ product.price }}</del></h4>
                             </div>
                         </div>
                         <!-- /product widget -->
-
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product05.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- /product widget -->
-
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product06.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- product widget -->
                     </div>
-
-                    <div>
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product07.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- /product widget -->
-
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product08.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- /product widget -->
-
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product09.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- product widget -->
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -164,94 +70,31 @@
 
             <div class="col-md-4 col-xs-6">
                 <div class="section-title">
-                    <h4 class="title">Top selling</h4>
+                    <h4 class="title">Recent Products</h4>
                     <div class="section-nav">
                         <div id="slick-nav-5" class="products-slick-nav"></div>
                     </div>
                 </div>
 
                 <div class="products-widget-slick" data-nav="#slick-nav-5">
+                    {% for product in recent_products %}
                     <div>
                         <!-- product widget -->
                         <div class="product-widget">
+                            {% if product.images.exists %}
                             <div class="product-img">
-                                <img src="{% static 'img/product01.png' %}" alt="">
+                                <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}">
                             </div>
+                            {% endif %}
                             <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
+                                <p class="product-category">{{ product.categories.first.name }}</p>
+                                <h3 class="product-name"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                                <h4 class="product-price">${{ product.discount_price|default:product.price }} <del class="product-old-price">${{ product.price }}</del></h4>
                             </div>
                         </div>
                         <!-- /product widget -->
-
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product02.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- /product widget -->
-
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product03.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- product widget -->
                     </div>
-
-                    <div>
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product04.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- /product widget -->
-
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product05.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- /product widget -->
-
-                        <!-- product widget -->
-                        <div class="product-widget">
-                            <div class="product-img">
-                                <img src="{% static 'img/product06.png' %}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <p class="product-category">Category</p>
-                                <h3 class="product-name"><a href="./product.html">product name goes here</a></h3>
-                                <h4 class="product-price">&#8358;980.00 <del class="product-old-price">&#8358;990.00</del></h4>
-                            </div>
-                        </div>
-                        <!-- product widget -->
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
