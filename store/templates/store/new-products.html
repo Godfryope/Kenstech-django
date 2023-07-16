@@ -54,14 +54,14 @@
                     <div class="row">
                         {% for product in products %}
                         <!-- product -->
-                        <div class="col-lg-3">
+                        <div class="col-lg-3 mx-0 px-2 py-3">
                             <div class="product">
                                 <!-- Product image -->
                                 {% if product.images.exists %}
                                 <div class="product-img">
                                     <img src="{{ product.images.first.image.url }}" alt="">
                                     <div class="product-label">
-                                        <span class="sale">-30%</span>
+                                        <span class="sale">-{{ product.discount_value }}%</span>
                                         <span class="new">NEW</span>
                                     </div>
                                 </div>
@@ -70,16 +70,16 @@
                                 <!-- Product details -->
                                 <div class="product-body">
                                     {% for category in product.categories.all %}
-                                    <p class="product-category">{{ category.name }}</p>
+                                    <p class="product-category my-0 py-1">{{ category.name }}</p>
                                     {% endfor %}
-                                    <h3 class="product-name"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
+                                    <h3 class="product-name py-1 my-0"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
                         
                                     {% if product.discount %}
-                                    <h4 class="product-price">&#8358;{{ product.discount_price|intcomma }}</h4>
-                                    <h4><del class="product-old-price">&#8358;{{ product.price|intcomma }}</del></h4>
+                                    <h4 class="product-price py-1 my-0">&#8358;{{ product.discount_price|intcomma }}</h4>
+                                    <h4><del class="product-old-price py-1 my-0">&#8358;{{ product.price|intcomma }}</del></h4>
                                     {% else %}
-                                    <h4 class="product-price">&#8358;{{ product.price|intcomma }}</h4>
-                                    <h4><del class="product-old-price">&#8358;{{ product.discount_price|intcomma }}</del></h4>
+                                    <h4 class="product-price py-1 my-0">&#8358;{{ product.price|intcomma }}</h4>
+                                    <h4><del class="product-old-price py-1">&#8358;{{ product.discount_price|intcomma }}</del></h4>
                                     {% endif %}
                         
                                     <div class="product-rating">
@@ -93,11 +93,11 @@
                                     <div class="product-btns">
                                         <button class="add-to-wishlist">
                                             <i class="fa fa-heart-o"></i>
-                                            <span class="tooltipp">add to wishlist</span>
+                                            {% comment %} <span class="tooltipp">add to wishlist</span> {% endcomment %}
                                         </button>
                                         <button class="add-to-compare">
                                             <i class="fa fa-shopping-cart"></i>
-                                            <span class="tooltipp">add to cart</span>
+                                            {% comment %} <span class="tooltipp">add to cart</span> {% endcomment %}
                                         </button>
                                         {% if product.images.exists %}
                                         <button class="quick-view">

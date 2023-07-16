@@ -19,8 +19,9 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    price = models.IntegerField()
-    discount_price = models.IntegerField(default=0)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    discount_value = models.PositiveIntegerField(default=0)
+    discount_price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     discount = models.BooleanField(default=False)
     categories = models.ManyToManyField(Category)
     related_products = models.ManyToManyField('self', blank=True)
@@ -33,6 +34,7 @@ class Product(models.Model):
     is_new = models.BooleanField(default=True)
     hot_deal= models.BooleanField(default=False)
     sales = models.IntegerField(default=0)
+    shipping_fee = models.IntegerField(default=0)
     slug = models.SlugField(unique=True, null=True, blank=True)
 
     # Add user session relationship
@@ -50,6 +52,12 @@ class Product(models.Model):
     
 
     def save(self, *args, **kwargs):
+        if self.discount:
+            discount_amount = self.price * self.discount_value / 100
+            self.discount_price = self.price - discount_amount
+        else:
+            self.discount_price = self.price
+
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
