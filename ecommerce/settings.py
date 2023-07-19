@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
-
+import time
+from decouple import config
 import django
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.humanize',
+    'compressor',
+    'static_precompiler',
 
 
     'allauth',
@@ -194,6 +197,26 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+]
+
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
+
+STATIC_PRECOMPILER_COMPILERS = [
+    ('static_precompiler.compilers.LESS', {
+        # Configuration options for LESS compiler...
+    }),
+    ('static_precompiler.compilers.SASS', {
+        # Configuration options for SASS compiler...
+    }),
+    # Other compilers...
+]
+
+
 # CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
@@ -204,9 +227,13 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_MANIFEST = True
+
+STATIC_VERSION = int(time.time())
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # Add your email configuration settings here
-
 
 
 TEMPLATES = [
@@ -232,18 +259,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 LOGIN_REDIRECT_URL = '/'
-SIGNUP_REDIRECT_URL = '/'
-
+SIGNUP_REDIRECT_URL = '/accounts/login/'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'kenstech_db',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
+
 
 
 # Password validation
@@ -263,6 +294,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# AUTH_USER_MODEL = 'store.CustomUser'
 
 
 # Internationalization

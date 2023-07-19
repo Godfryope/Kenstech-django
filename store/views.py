@@ -287,4 +287,3 @@ class CartPageView(TemplateView):
         return redirect('cart')
 # class SignupView(TemplateView):
 #     template_name = 'store/signup.html'
-

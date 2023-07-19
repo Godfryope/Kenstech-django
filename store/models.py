@@ -2,12 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.text import slugify
-# from django.dispatch import receiver
-# from svglib.svglib import svg2rlg
-# from reportlab.graphics import renderPM
-# import os
-# import tempfile
-# from wand.image import Image
+from PIL import Image
 
 
 
@@ -60,40 +55,34 @@ class Product(models.Model):
 
         if not self.slug:
             self.slug = slugify(self.name)
+
         super().save(*args, **kwargs)
 
-
-# def convert_image_to_svg(image_path):
-#     # Create a temporary file with .svg extension
-#     _, temp_svg_path = tempfile.mkstemp(suffix='.svg')
-
-#     # Convert the image to SVG format using wand library
-#     with Image(filename=image_path) as img:
-#         img.format = 'svg'
-#         img.save(filename=temp_svg_path)
-
-#     # Return the path of the converted SVG file
-#     return temp_svg_path
+        
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
-    image = models.FileField(upload_to='products', blank=True, null=True)
+    image = models.ImageField(upload_to='products', blank=True, null=True)
 
-    def __str__(self):
-        return f"Image for {self.product.name}"
+    def optimize_image(self):
+        if self.image:
+            img = Image.open(self.image.path)
+            img.thumbnail((250, 250))  # Resize the image to a maximum size of 800x800 pixels
+            img.save(self.image.path, optimize=True, quality=90)  # Optimize and save the image
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        # # Convert the uploaded image to SVG format
-        # if self.image and not self.image:
-        #     svg_path = convert_image_to_svg(self.image.path)
-        #     self.image.save(os.path.basename(svg_path), open(svg_path, 'rb'))
-
-        #     # Remove the temporary SVG file
-        #     os.remove(svg_path)
+        if self.image:
+            # Optimize the product image after saving
+            self.optimize_image()
 
         super().save(*args, **kwargs)
+
+        # # Optimize the product image after saving
+        # self.optimize_image()
+
+    
 
 
 

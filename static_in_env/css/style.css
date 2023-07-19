@@ -86,6 +86,10 @@ ul, ol {
   list-style: none
 }
 
+.form {
+  color: white !important;
+}
+
 /*----------------------------*\
 	Buttons
 \*----------------------------*/
@@ -1028,6 +1032,7 @@ textarea.input {
   color: #E4E7ED;
   z-index: 10;
 }
+
 
 .product .product-body .product-rating>i.fa-star {
   color: Coral;

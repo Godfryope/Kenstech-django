@@ -17,12 +17,18 @@
             <a href="mailto:"></a>
             <li><a href="tel:+234 812 055 0112"><i class="fa fa-phone"></i> +234 812 055 0112</a></li>
             <li><a href="mailto:info@kenstechsupport.com"><i class="fa fa-envelope-o"></i> info@kenstechsupport.com</a></li>
-            <li><a href=""><i class="fa fa-map-marker"></i> Good brother plaza beside com. prize s/mart opp. oruerue plaza, uromi, edo state</a></li>
+            <li><a href=""><i class="fa fa-map-marker"></i> Good brother plaza beside com. prize s/mart opp. oruerue plaza, uromi, edo state</a></li>
         </ul>
         <ul class="header-links pull-right">
-            <!-- <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li> -->
-            <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+            {% if user.is_authenticated %}
+                <!-- User is signed in -->
+                <li><a href=""><i class="fa fa-user-o"></i> My Account</a></li>
+            {% else %}
+                <!-- User is not signed in -->
+                <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> Sign in</a></li>
+            {% endif %}
         </ul>
+        
     </div>
 </div>
 <!-- /TOP HEADER -->
