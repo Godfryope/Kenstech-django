@@ -7,12 +7,16 @@
             <!-- NAV -->
             <ul class="main-nav nav navbar-nav2">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">Hot Deals</a></li>
                 <li><a href="#">Categories</a></li>
-                <li><a href="#">Laptops</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="/">My Account</a></li>
+                {% else %}
+                <li><a href="{% url 'account_login' %}">Sign in</a></li>
+                {% endif %}
+                {% comment %} <li><a href="#">Laptops</a></li>
                 <li><a href="#">Smartphones</a></li>
                 <li><a href="#">Cameras</a></li>
-                <li><a href="#">Accessories</a></li>
+                <li><a href="#">Accessories</a></li> {% endcomment %}
             </ul>
             <!-- /NAV -->
         </div>

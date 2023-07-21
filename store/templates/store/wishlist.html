@@ -1,0 +1,62 @@
+{% extends 'store/base.html' %}
+{% load humanize %}
+
+{% block content %}
+{% include 'store/header.html' %}
+{% include 'store/navigation.html' %}
+<div class="cart-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="main-heading mb-10">My wishlist</div>
+                <div class="table-wishlist">
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="45%">Product Name</th>
+                                <th width="15%">Unit Price</th>
+                                <th width="15%">Stock Status</th>
+                                <th width="15%">Remove Items</th>
+                                {% comment %} <th width="10%"></th> {% endcomment %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in wishlist_items %}
+                            <tr>
+                                <td width="45%">
+                                    <div class="display-flex align-center">
+                                        {% if item.product.images.exists %}
+                                        <div class="img-product">
+                                            <img width="450px" height="65px" src="{{ item.product.images.first.image.url }}" alt="{{ item.product.name }}" class="mCS_img_loaded">
+                                        </div>
+                                        {% endif %}
+                                        <div class="name-product">
+                                            {{ item.product.name }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="15%" class="price">&#8358;{{ item.product.price|intcomma }}</td>
+                                <td width="15%"><span class="in-stock-box">In Stock</span></td>
+                                <td class="text-center" width="15%">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="item_id" value="{{ item.product.id }}">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to remove this item from your wishlist?')">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                        <input type="hidden" name="action" value="remove_from_wishlist">
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+{% include 'store/footer.html' %}
+{% endblock content %}

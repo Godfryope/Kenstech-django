@@ -14,7 +14,7 @@
                 <div class="col-md-3">
                     <div class="header-logo">
                         <a href="/" class="logo">
-                            <img src="{% static 'img/logo.png' %}" alt="">
+                            <img width="60" height="60" src="{% static 'img/logo.png' %}" alt="">
                         </a>
                     </div>
                 </div>
@@ -28,7 +28,7 @@
                     <div class="header-ctn">
                         <!-- Wishlist -->
                         <div>
-                            <a href="./wishlist.html">
+                            <a href="{% url 'wishlist' %}">
                                 <i class="fa fa-heart-o"></i>
                                 <span>Your Wishlist</span>
                                 <div class="qty">{{ wishlist_items_count }}</div>

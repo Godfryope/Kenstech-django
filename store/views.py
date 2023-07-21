@@ -1,6 +1,7 @@
 from django.views.generic import *
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.http import JsonResponse
 from django.db.models import Q
 # from django.contrib.auth.decorators import login_required
 from django.db.models import Count
@@ -88,14 +89,44 @@ class ProductListView(ListView):
         return cart
     
     def post(self, request, *args, **kwargs):
+        # Handling the "Add to Cart" form submission
+        product_id = request.POST.get('product_id')
+        quantity = int(request.POST.get('quantity', 1))
+        product = get_object_or_404(Product, id=product_id)
+
+        user = self.request.user
+        cart = self.get_cart()
+
+        # Check if the item is already in the cart
+        if user.is_authenticated:
+            cart_item, item_created = CartItem.objects.get_or_create(cart=cart, user=user, product=product)
+        else:
+            cart_item, item_created = CartItem.objects.get_or_create(cart=cart, product=product)
+
+        # Update the quantity if the item already exists in the cart
+        if not item_created:
+            cart_item.quantity = quantity
+            cart_item.save()
+            messages.success(request, "Item added to cart successfully.")
+        else:
+            # Add the item to the cart if it's a new item
+            cart_item.quantity = quantity
+            cart_item.save()
+            if cart:
+                cart.items.add(cart_item)
+            messages.success(request, "Item added to cart successfully.")
+
+        # Store the quantity in the session
+        cart_id = cart.id
+        request.session[f'cart_{cart_id}_quantity'] = quantity
+
+        # Subscribe to the newsletter
         newsletter_form = NewsletterSubscriberForm(request.POST)
         if newsletter_form.is_valid():
             newsletter_form.save()
-            messages.success(request, 'Successfully subscribed to the newsletter!')
-        else:
-            messages.error(request, 'Failed to subscribe to the newsletter.')
+            messages.success(request, "Successfully subscribed to the newsletter.")
 
-        return self.get(request, *args, **kwargs)
+        return redirect('product_list')
     
     def wishlist_items_count(self):
         # Logic to retrieve and return the count of items in the wishlist for the current user
@@ -287,3 +318,82 @@ class CartPageView(TemplateView):
         return redirect('cart')
 # class SignupView(TemplateView):
 #     template_name = 'store/signup.html'
+
+
+class WishlistView(TemplateView):
+    template_name = 'store/wishlist.html'
+
+    def get_wishlist(self):
+        if self.request.user.is_authenticated:
+            # If the user is logged in, retrieve their wishlist
+            wishlist, _ = Wishlist.objects.get_or_create(user=self.request.user)
+        else:
+            # For anonymous users, retrieve the wishlist from the session
+            wishlist_id = self.request.session.get('wishlist_id')
+            if wishlist_id:
+                wishlist = get_object_or_404(Wishlist, id=wishlist_id)
+            else:
+                # If the wishlist doesn't exist, create a new one
+                wishlist = Wishlist.objects.create()
+                self.request.session['wishlist_id'] = wishlist.id
+
+        return wishlist
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        wishlist = self.get_wishlist()
+        context['wishlist_items_count'] = wishlist.items.count()
+        context['cart_items_count'] = self.cart_items_count()
+
+        wishlist_items = wishlist.items.all()
+        context['wishlist_items'] = wishlist_items
+
+        return context
+
+    def cart_items_count(self):
+        # Logic to retrieve and return the cart items count for the current user
+        cart_items_count = 0
+        user = self.request.user
+        if user.is_authenticated:
+            cart = Cart.objects.filter(user=user).first()
+            if cart:
+                cart_items_count = cart.items.count()
+        else:
+            cart_id = self.request.session.get('cart_id')
+            if cart_id:
+                cart = Cart.objects.filter(id=cart_id).first()
+                if cart:
+                    cart_items_count = cart.items.count()
+        return cart_items_count
+
+    def post(self, request, *args, **kwargs):
+        wishlist = self.get_wishlist()
+        context = self.get_context_data(**kwargs)
+
+        # # Handling the "Add to Cart" form submission
+        # add_to_cart_form = AddToCartForm(request.POST)
+        # if add_to_cart_form.is_valid():
+        #     product_id = add_to_cart_form.cleaned_data['item_id']
+        #     product = get_object_or_404(Product, id=product_id)
+
+        #     # Add the product to the cart (you may need to adjust the logic based on your cart implementation)
+        #     cart = self.get_cart()
+        #     cart.add_to_cart(product)
+
+        #     messages.success(request, "Item added to cart successfully.")
+
+        # Handling the "Remove from Wishlist" form submission
+        remove_from_wishlist_form = RemoveFromWishlistForm(request.POST)
+        if remove_from_wishlist_form.is_valid():
+            product_id = remove_from_wishlist_form.cleaned_data['item_id']
+            product = get_object_or_404(Product, id=product_id)
+
+            # Remove the product from the wishlist
+            wishlist_item = WishlistItem.objects.filter(wishlist=wishlist, product=product).first()
+            if wishlist_item:
+                wishlist_item.delete()
+                messages.success(request, "Item removed from wishlist successfully.")
+            else:
+                messages.error(request, "Item is not in the wishlist.")
+
+        return self.get(request, *args, **kwargs)

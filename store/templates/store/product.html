@@ -38,7 +38,7 @@
 						<div id="product-imgs">
 							{% for image in product.images.all %}
 							<div class="product-preview">
-								<img src="{{ image.image.url }}" alt="">
+								<img class="img-fluid" src="{{ image.image.url }}" alt="">
 							</div>
 							{% endfor %}
 
@@ -96,7 +96,7 @@
 									<div class="qty-label">
 										Qty
 										<div class="input-number">
-											<input name="quantity" value="{{ quantity }}" type="number">
+											<input name="quantity" value="{{ quantity|default:1 }}" type="number">
 											<span class="qty-up">+</span>
 											<span class="qty-down">-</span>
 										</div>
@@ -351,7 +351,7 @@
 		<!-- /SECTION -->
 
 		<!-- Section -->
-		<div class="section">
+		<div class="section related_products">
 			<!-- container -->
 			<div class="container">
 				<!-- row -->
@@ -415,7 +415,7 @@
 		</div>
 		<!-- /Section -->
 
-		{% include 'store/newsletter.html' %}
+		{% comment %} {% include 'store/newsletter.html' %} {% endcomment %}
 
 		{% include 'store/footer.html' %}
 

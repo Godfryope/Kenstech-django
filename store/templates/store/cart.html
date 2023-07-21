@@ -2,7 +2,7 @@
 {% load humanize %} 
 {% block content %} 
 {% include 'store/header.html' %} {% include 'store/navigation.html' %}
-
+<div class="cart2">
 <div class="cart">
 	<section class="h-100" style="background-color: #eee;">
 		<div class="container-flow h-100">
@@ -38,7 +38,7 @@
 							  <div class="d-flex flex-row align-items-center">
 								<div>
 								  <img src="{{ cart_item.product.images.first.image.url }}"
-									class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">
+									class="img-fluid rounded-3" alt="Shopping item" style="width: 65px; max-height:65px;">
 								</div>
 								<div class="ms-3">
 								  <h5>{{ cart_item.product.name }}</h5>
@@ -50,10 +50,10 @@
 								  <h5 class="fw-normal mb-0">{{ cart_item.quantity }}</h5>
 								</div>
 								<div style="width: 80px;">
-								  <h5 class="mb-0">${{ cart_item.product.discount_price }}</h5>
+								  <h5 class="mb-0">&#8358;{{ cart_item.product.discount_price|intcomma }}</h5>
 								</div>
 								<input type="hidden" name="item_id" value="{{ cart_item.id }}" />
-								<button type="submit" class="btn btn-link text-muted"><i class="fas fa-trash-alt"></i></button>
+								<button onclick="return confirm('Are you sure you want to remove this item from your cart?')" type="submit" class="btn btn-link text-muted"><i class="fas fa-trash-alt"></i></button>
 							  </div>
 							</div>
 						  </div>
@@ -68,8 +68,8 @@
 						<div class="card-body">
 						  <div class="d-flex justify-content-between align-items-center mb-4">
 							<h5 class="mb-0 text-white">Card details</h5>
-							<img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp"
-							  class="img-fluid rounded-3" style="width: 45px;" alt="Avatar">
+							{% comment %} <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/avatar-6.webp"
+							  class="img-fluid rounded-3" style="width: 45px;" alt="Avatar"> {% endcomment %}
 						  </div>
 	  
 						  <p class="small mb-2">Card type</p>
@@ -117,22 +117,22 @@
 	  
 						  <div class="d-flex justify-content-between">
 							<p class="mb-2">Subtotal</p>
-							<p class="mb-2">${{ total_price }}</p>
+							<p class="mb-2">&#8358;{{ total_price|intcomma }}</p>
 						  </div>
 	  
 						  <div class="d-flex justify-content-between">
 							<p class="mb-2">Shipping</p>
-							<p class="mb-2">$0</p>
+							<p class="mb-2">&#8358;0</p>
 						  </div>
 	  
 						  <div class="d-flex justify-content-between mb-4">
 							<p class="mb-2">Total(Incl. taxes)</p>
-							<p class="mb-2">${{ total_price }}</p>
+							<p class="mb-2">&#8358;{{ total_price|intcomma }}</p>
 						  </div>
 	  
 						  <button type="button" style="background: Coral;" class="btn btn-block btn-lg">
 							<div class="d-flex justify-content-between">
-							  <span>${{ total_price }}</span>
+							  <span>&#8358;{{ total_price|intcomma }}</span>
 							  <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
 							</div>
 						  </button>
@@ -151,6 +151,7 @@
 		</div>
 	  </section>
 </div>
-{% include 'store/newsletter.html' %}
+</div>
+{% comment %} {% include 'store/newsletter.html' %} {% endcomment %}
 
 {% include 'store/footer.html' %} {% endblock content %}
