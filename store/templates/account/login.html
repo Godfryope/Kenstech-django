@@ -1,52 +1,48 @@
-{% extends 'store/base.html' %}
-
-{% load i18n %}
+{% extends 'store/base.html' %} 
+{% load i18n %} 
 {% load account socialaccount %}
-{% load static %}
-{% comment %} {% load widget_tweaks %} {% endcomment %}
-{% block head_title %}
-    {% trans "Login" %}
-{% endblock head_title %}
-
-
+{% load static %} {% comment %} {% load widget_tweaks %} {% endcomment %} 
+{% block head_title %} {% trans "Login" %} {% endblock head_title %} 
 {% block content %}
 
- <section class="login"> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> <span></span> 
+<section class="login">
 
-    <div class="signin">
-      <div class="content">
-          <h2>Sign In</h2>
-          <div class="form">
-              <form method="POST">
-                  {% csrf_token %}
-                  {{ form.non_field_errors }} {# Display non-field errors, if any #}
-                  <div class="inputBox">
-                      {{ form.login }} {# Display the username field #}
-                      <i>Username</i>
-                      {% if form.login.errors %}
-                      <p class="error">{{ form.login.errors }}</p> {# Display username field errors #}
-                      {% endif %}
-                  </div>
-                  <div class="inputBox">
-                      {{ form.password }} {# Display the password field #}
-                      <i>Password</i>
-                      {% if form.password.errors %}
-                      <p class="error">{{ form.password.errors }}</p> {# Display password field errors #}
-                      {% endif %}
-                  </div>
-                  <div class="links">
-                      <a href="{% url 'account_reset_password' %}">Forgot Password</a>
-                      <a href="{{ signup_url }}">Sign Up</a>
-                  </div>
-                  <div class="inputBox">
-                      <input type="submit" value="Login">
-                  </div>
-              </form>
+  <div class="signin">
+    <div class="content">
+      <h2>Sign In</h2>
+      <div class="form">
+        <form method="POST">
+          {% csrf_token %} {{ form.non_field_errors }}
+          <div class="inputBox">
+            {{ form.login }} {# Display the username field #}
+            <i>Username</i>
+            {% if form.login.errors %}
+            <p class="error">{{ form.login.errors }}</p>
+            {# Display username field errors #} {% endif %}
           </div>
+          <div class="inputBox">
+            {{ form.password }} {# Display the password field #}
+            <i>Password</i>
+            {% if form.password.errors %}
+            <p class="error">{{ form.password.errors }}</p>
+            {# Display password field errors #} {% endif %}
+          </div>
+          <div class="links">
+            <a href="{% url 'account_reset_password' %}">Forgot Password</a>
+            <a href="{{ signup_url }}">Sign Up</a>
+          </div>
+          <div class="inputBox">
+            <input type="submit" value="Login" />
+          </div>
+        </form>
+        <form method="get" action="{% provider_login_url 'google' %}">
+            <button class="btn btn-lg btn-block btn-primary" style="background-color: #dd4b39;">
+                <i class="fab fa-google me-2" style="color: #fff;"></i> Sign in with Google
+            </button>
+        </form>                        
       </div>
     </div>
+  </div>
+</section>
 
-
-  </section>
-
-  {% endblock content %}
+{% endblock content %}

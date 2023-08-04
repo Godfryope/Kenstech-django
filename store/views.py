@@ -1,6 +1,7 @@
 from django.views.generic import *
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.http import JsonResponse
 from django.db.models import Q
 # from django.contrib.auth.decorators import login_required
@@ -8,8 +9,11 @@ from django.db.models import Count
 from django.core.paginator import Paginator
 from django.db.models.functions import Coalesce
 from django.http import HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 from .models import *
 from .forms import *
+
+
 
 class ProductListView(ListView):
     model = Product
@@ -31,6 +35,9 @@ class ProductListView(ListView):
                 Q(name__icontains=search_query) |
                 Q(description__icontains=search_query)
             )
+            if not queryset.exists():
+                messages.success(self.request, "No item found")
+
         sort_option = self.request.GET.get('sort')
         if sort_option == 'popular':
             queryset = queryset.order_by('-sales')
@@ -397,3 +404,89 @@ class WishlistView(TemplateView):
                 messages.error(request, "Item is not in the wishlist.")
 
         return self.get(request, *args, **kwargs)
+
+
+class ProfileView(View):
+    template_name = 'store/profile.html'
+
+    def get(self, request, *args, **kwargs):
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        context = {'user_profile': user_profile}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+        # Update profile information from the form data
+        user_profile.user.first_name = request.POST.get('first_name', '')
+        user_profile.user.last_name = request.POST.get('last_name', '')
+        user_profile.address = request.POST.get('address', '')
+        user_profile.email_notifications_blog = bool(request.POST.get('notifications_blog', False))
+        user_profile.email_notifications_news = bool(request.POST.get('notifications_news', False))
+        user_profile.email_notifications_offers = bool(request.POST.get('notifications_offers', False))
+        user_profile.user.save()
+        user_profile.save()
+
+        messages.success(request, 'Profile updated successfully.')
+
+    
+        # if request.method == 'POST':
+        if 'logout' in request.POST:
+            # Manually log out the user
+            request.session.flush()
+            request.user = User()
+
+            messages.info(request, "You have been logged out.")
+        
+        return redirect(reverse('profile'))
+    
+# @csrf_exempt
+class PaymentStatusView(View):
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            # Process the payment status from Paystack
+            response_data = request.POST
+
+            # Check the 'status' field in the response_data to determine the payment status
+            status = response_data.get('status')
+
+            if status == 'success':
+                # Payment is successful, perform the necessary actions
+                # For example, update the order status, create an order, etc.
+
+                # Get the cart items for the current user
+                user = request.user
+                cart = get_object_or_404(Cart, user=user)
+
+                # Create a new order with the purchased items
+                order = Order.objects.create(user=user, total_price=cart.get_subtotal(), status='pending')
+
+                for cart_item in cart.items.all():
+                    OrderItem.objects.create(order=order, product=cart_item.product, quantity=cart_item.quantity, unit_price=cart_item.product.discount_price)
+
+                # Clear the cart (remove all items from the cart)
+                cart.items.clear()
+                cart.is_paid = True
+                cart.save()
+
+                # Return a success response to Paystack
+                return JsonResponse({'status': 'success'})
+            else:
+                # Payment failed, handle the failure scenario
+                # For example, log the failed payment or take other actions
+
+                # Return an error response to Paystack
+                return JsonResponse({'status': 'error', 'message': 'Payment failed'})
+
+        else:
+            # Return an error response for invalid request method
+            return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+class OrderDetailView(View):
+    template_name = 'store/order.html'
+
+    def get(self, request, *args, **kwargs):
+        order_id = kwargs.get('order_id')
+        order = get_object_or_404(Order, id=order_id)
+        return render(request, self.template_name, {'order': order})

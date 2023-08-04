@@ -1,0 +1,45 @@
+{% extends 'store/base.html' %} 
+{% load humanize %} 
+
+{% block content %} 
+{% include 'store/header.html' %} 
+{% include 'store/navigation.html' %}
+
+<div class="container">
+    <article class="card">
+        <header class="card-header"> My Orders / Tracking </header>
+        <div class="card-body">
+            <h6>Order ID: {{ order.id }}</h6>
+            <article class="card">
+                <div class="card-body row">
+                    <div class="col"> <strong>Estimated Delivery time:</strong> <br>{{ order.estimated_delivery_date|date:"j F Y" }} </div>
+                    <div class="col"> <strong>Shipping BY:</strong> <br>{{ order.shipping_company }}, | <i class="fa fa-phone"></i> {{ order.shipping_contact }} </div>
+                    <div class="col"> <strong>Status:</strong> <br>{{ order.get_status_display }} </div>
+                    <div class="col"> <strong>Tracking #:</strong> <br>{{ order.tracking_number }} </div>
+                </div>
+            </article>
+            <div class="track">
+                {% for step in order.get_tracking_steps %}
+                <div class="step {% if forloop.first %}active{% endif %}"> <span class="icon"> <i class="fa {{ step.icon }}"></i> </span> <span class="text">{{ step.text }}</span> </div>
+                {% endfor %}
+            </div>
+            <hr>
+            <ul class="row">
+                {% for item in order.items.all %}
+                <li class="col-md-4">
+                    <figure class="itemside mb-3">
+                        <div class="aside"><img src="{{ item.product.images.first.image.url }}" class="img-sm border"></div>
+                        <figcaption class="info align-self-center">
+                            <p class="title">{{ item.product.name }} <br> {{ item.product.details }}</p> <span class="text-muted">&#8358;{{ item.unit_price|intcomma }} </span>
+                        </figcaption>
+                    </figure>
+                </li>
+                {% endfor %}
+            </ul>
+            <hr>
+            <a href="{% url 'your_orders_view_name' %}" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
+        </div>
+    </article>
+</div>
+
+{% endblock content %}

@@ -13,45 +13,16 @@
               <div class="e-profile">
                 <div class="row">
                   <div class="col-12 col-sm-auto mb-3">
-                    <div class="mx-auto" style="width: 140px">
-                      <div
-                        class="d-flex justify-content-center align-items-center rounded"
-                        style="
-                          height: 140px;
-                          background-color: rgb(233, 236, 239);
-                        "
-                      >
-                        <span
-                          style="
-                            color: rgb(166, 168, 170);
-                            font: bold 8pt Arial;
-                          "
-                          >140x140</span
-                        >
-                      </div>
-                    </div>
+                    <!-- ... (rest of the template content) ... -->
                   </div>
                   <div
                     class="col d-flex flex-column flex-sm-row justify-content-between mb-3"
                   >
                     <div class="text-center text-sm-left mb-2 mb-sm-0">
-                      <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">John Smith</h4>
-                      <p class="mb-0">@johnny.s</p>
-                      <div class="text-muted">
-                        <small>Last seen 2 hours ago</small>
-                      </div>
-                      <div class="mt-2">
-                        <button class="btn btn-primary" type="button">
-                          <i class="fa fa-fw fa-camera"></i>
-                          <span>Change Photo</span>
-                        </button>
-                      </div>
+                      <!-- ... (rest of the template content) ... -->
                     </div>
                     <div class="text-center text-sm-right">
-                      <span class="badge badge-secondary">user</span>
-                      <div class="text-muted">
-                        <small>Joined 09 Dec 2017</small>
-                      </div>
+                      <!-- ... (rest of the template content) ... -->
                     </div>
                   </div>
                 </div>
@@ -62,31 +33,32 @@
                 </ul>
                 <div class="tab-content pt-3">
                   <div class="tab-pane active">
-                    <form class="form" novalidate="">
+                    <form class="form" method="post" novalidate="">
+                      {% csrf_token %}
                       <div class="row">
                         <div class="col">
                           <div class="row">
                             <div class="col text-black">
                               <div class="form-group">
-                                <label>Full Name</label>
+                                <label>First Name</label>
                                 <input
                                   class="form-control"
                                   type="text"
-                                  name="name"
-                                  placeholder="John Smith"
-                                  value="John Smith"
+                                  name="first_name"
+                                  placeholder="First Name"
+                                  value="{{ user_profile.user.first_name }}"
                                 />
                               </div>
                             </div>
                             <div class="col">
                               <div class="form-group">
-                                <label>Username</label>
+                                <label>Last Name</label>
                                 <input
                                   class="form-control"
                                   type="text"
-                                  name="username"
-                                  placeholder="johnny.s"
-                                  value="johnny.s"
+                                  name="last_name"
+                                  placeholder="Last Name"
+                                  value="{{ user_profile.user.last_name }}"
                                 />
                               </div>
                             </div>
@@ -99,6 +71,8 @@
                                   class="form-control"
                                   type="text"
                                   placeholder="user@example.com"
+                                  value="{{ user_profile.user.email }}"
+                                  disabled
                                 />
                               </div>
                             </div>
@@ -111,6 +85,8 @@
                                   class="form-control"
                                   rows="5"
                                   placeholder="My Address"
+                                  name="address"
+                                  value="{{ user_profile.address }}"
                                 ></input>
                               </div>
                             </div>
@@ -122,43 +98,17 @@
                           <div class="my-5 "><b>Change Password</b></div>
                           <div class="row">
                             <div class="col">
-                              <div class="form-group">
-                                <label>Current Password</label>
-                                <input
-                                  class="form-control"
-                                  type="password"
-                                  placeholder="••••••"
-                                />
-                              </div>
+                              <!-- ... (rest of the template content) ... -->
                             </div>
                           </div>
                           <div class="row">
                             <div class="col">
-                              <div class="form-group">
-                                <label>New Password</label>
-                                <input
-                                  class="form-control"
-                                  type="password"
-                                  placeholder="••••••"
-                                />
-                              </div>
+                              <!-- ... (rest of the template content) ... -->
                             </div>
                           </div>
                           <div class="row">
                             <div class="col">
-                              <div class="form-group">
-                                <label
-                                  >Confirm
-                                  <span class="d-none d-xl-inline"
-                                    >Password</span
-                                  ></label
-                                >
-                                <input
-                                  class="form-control"
-                                  type="password"
-                                  placeholder="••••••"
-                                />
-                              </div>
+                              <!-- ... (rest of the template content) ... -->
                             </div>
                           </div>
                         </div>
@@ -173,7 +123,10 @@
                                     type="checkbox"
                                     class="custom-control-input"
                                     id="notifications-blog"
-                                    checked=""
+                                    {% if user_profile.email_notifications_blog %}
+                                    checked
+                                    {% endif %}
+                                    name="notifications_blog"
                                   />
                                   <label
                                     class="custom-control-label"
@@ -186,7 +139,10 @@
                                     type="checkbox"
                                     class="custom-control-input"
                                     id="notifications-news"
-                                    checked=""
+                                    {% if user_profile.email_notifications_news %}
+                                    checked
+                                    {% endif %}
+                                    name="notifications_news"
                                   />
                                   <label
                                     class="custom-control-label"
@@ -199,7 +155,10 @@
                                     type="checkbox"
                                     class="custom-control-input"
                                     id="notifications-offers"
-                                    checked=""
+                                    {% if user_profile.email_notifications_offers %}
+                                    checked
+                                    {% endif %}
+                                    name="notifications_offers"
                                   />
                                   <label
                                     class="custom-control-label"
@@ -231,10 +190,10 @@
           <div class="card shadow-0 mb-3">
             <div class="card-body">
               <div class="px-xl-3">
-                <button class="btn btn-block btn-secondary">
-                  <i class="fa fa-sign-out"></i>
+                <a href="{% url 'account_logout' %}?next={{ request.path }}" class="btn btn-secondary">
+                  <i class="fa fa-fw fa-sign-out"></i>
                   <span>Logout</span>
-                </button>
+                </a>           
               </div>
             </div>
           </div>

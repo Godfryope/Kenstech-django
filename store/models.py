@@ -119,7 +119,8 @@ class CartItem(models.Model):
 class Cart(models.Model):
     items = models.ManyToManyField(CartItem)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-
+    reference = models.CharField(max_length=100, blank=True, null=True)
+    is_paid = models.BooleanField(default=False)
 
     def get_total_items(self):
         return self.items.count()
@@ -147,4 +148,46 @@ class WishlistItem(models.Model):
     def __str__(self):
         return f"{self.product.name} in wishlist"
 
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    address = models.TextField(blank=True)
+    email_notifications_blog = models.BooleanField(default=True)
+    email_notifications_news = models.BooleanField(default=True)
+    email_notifications_offers = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.user.username
     
+class Order(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('canceled', 'Canceled'),
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Product, through='OrderItem')
+    total_price = models.DecimalField(max_digits=8, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(unique=True, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.product.name)
+        super().save(*args, **kwargs)
+
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.user.username}"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    unit_price = models.DecimalField(max_digits=8, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} ({self.unit_price})"
